@@ -16,7 +16,7 @@
 
 <script>
 // 导入子页面组件
-import StatusPage from '../components/remoteControlPage'
+import StatusPage from '../components/statusPage'
 import RemoteControlPage from '../components/remoteControlPage'
 
 export default {
