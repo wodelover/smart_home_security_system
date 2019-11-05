@@ -19,15 +19,6 @@
           @change="onChangeOfAirStatusChanged"
         ></el-switch>
       </el-col>
-      <el-col>
-        <el-switch
-          v-model="keepTempStatus"
-          active-color="#13ce66"
-          :active-text="keepTempStatusText"
-          inactive-color="#b3c0d1"
-          @change="onKeepTempStatusChanged"
-        ></el-switch>
-      </el-col>
     </el-row>
   </div>
 </template>
@@ -39,9 +30,7 @@ export default {
       lightStatus: false,
       lightStatusText: "已关闭照明",
       changeOfAirStatus: false,
-      changeOfAirStatusText: "已关闭换气",
-      keepTempStatus: false,
-      keepTempStatusText: "已关闭恒温"
+      changeOfAirStatusText: "已关闭换气"
     };
   },
   created(){//当刷新网页后重新请求转态信息
@@ -53,7 +42,6 @@ export default {
         this.$http.getControlDefaultStatus().then(resp => {
           this.lightStatus = resp.data.light;
           this.changeOfAirStatus = resp.data.changeAir;
-          this.keepTempStatus = resp.data.keepTemp;
         });
       }, 2000);
     },
@@ -72,15 +60,6 @@ export default {
           this.changeOfAirStatusText = "已打开换气";
         } else{
           this.changeOfAirStatusText = "已关闭换气";
-        }
-      });
-    },
-    onKeepTempStatusChanged() {
-      this.$http.changeKeepTempStatus(this.keepTempStatus).then(resp => {
-        if ('true' === resp.data.keepTempStatus) {
-          this.keepTempStatusText = "已打开恒温";
-        } else {
-          this.keepTempStatusText = "已关闭恒温";
         }
       });
     }

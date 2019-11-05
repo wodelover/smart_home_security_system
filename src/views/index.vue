@@ -6,7 +6,7 @@
         <el-tab-pane label="状态信息">
           <StatusPage></StatusPage>
         </el-tab-pane>
-        <el-tab-pane label="远程控制">
+        <el-tab-pane label="设备控制">
           <RemoteControlPage></RemoteControlPage>
         </el-tab-pane>
       </el-tabs>

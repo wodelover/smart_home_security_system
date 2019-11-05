@@ -32,45 +32,43 @@ app.all('*', function(req, res, next) {
 });
 
 /* 定义系统用到的所有的中间变量 */
-var temperature = "0"; // 温度
-var fireStatus = false; // 是否有可燃气体
-var homeStatus = false; // 是否在窝里面
-var lightStatus = false; // 照明是否打开
-var changeAirStatus = false; // 是否在打开换气
-var keepTempStatus = false; // 是否开启恒温
+var temperature = "11.56"; // 温度
+var humidity = "45"; // 湿度
+var fireStatus = true; // 是否有可燃气体
+var homeStatus = true; // 是否有人进入
+var lightStatus = true; // 照明是否打开
+var changeAirStatus = true; // 是否在打开换气
 
-var hardLightStatus = false; // 硬件照明是否打开
-var hardChangeAirStatus = false; // 硬件是否在打开换气
-var hardKeepTempStatus = false; // 硬件是否开启恒温
+var hardLightStatus = true; // 硬件照明是否打开
+var hardChangeAirStatus = true; // 硬件是否在打开换气
 
 /*
     url:  127.0.0.1:8080/petroom
     note: 硬件数据回传接口地址，数据返回也通过此接口地址
 */
-app.post('/petroom', function(req, res) {
+app.post('/roomStatus', function(req, res) {
 
     // 定义接收数据缓冲区
     var data = '';
 
     // 连接数据接收完成信号
     req.on('end', function() {
-        // 接收到硬件的完整数据(注意最外层应该使用单引号): {"temp":22.00,"crash":0,"fire":0,"air":0,"light":0,"keepTemp":0}
+        // 接收到硬件的完整数据(注意最外层应该使用单引号): {"temp":22.00,"humidity":45,"home":0,"fire":0,"air":0,"light":0}
         var temp = JSON.parse(data);
         // console.log(temp);
         temperature = String(temp['temp']);
+        humidity = String(temp['humidity']);
         fireStatus = Boolean(temp['fire']);
-        homeStatus = Boolean(temp['crash']);
+        homeStatus = Boolean(temp['home']);
         lightStatus = Boolean(temp['light']);
         changeAirStatus = Boolean(temp['air']);
-        keepTempStatus = Boolean(temp['keepTemp']);
 
         // 定义返回的数据包
-        var respone = {
+        var respond = {
             'L': Number(hardLightStatus), // 是否开灯
             'A': Number(hardChangeAirStatus), // 是否排气
-            'K': Number(hardKeepTempStatus) // 是否保持恒温
         };
-        res.send(JSON.stringify(respone));
+        res.send(JSON.stringify(respond));
     });
 
     // 连接有新数据到来信号
@@ -95,6 +93,13 @@ app.post('/login', urlencodedParser, function(req, res) {
     var response = {
         "loginStatus": true
     }
+
+    if (request.username == 'admin' && request.password == '123') {
+        response.loginStatus = true;
+    } else {
+        response.loginStatus = false;
+    }
+
     res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
     // 把json对象转换为json字符串
     res.end(JSON.stringify(response));
@@ -127,25 +132,13 @@ app.post('/air', urlencodedParser, function(req, res) {
 });
 
 /**
- * url: 127.0.0.1:8000/keepTemp
- * note: 打开恒温接口
- */
-app.post('/keepTemp', urlencodedParser, function(req, res) {
-    hardKeepTempStatus = req.body.keepTempStatus;
-    var response = {
-        "keepTempStatus": hardKeepTempStatus
-    }
-    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
-    res.end(JSON.stringify(response));
-});
-
-/**
  * url: 127.0.0.1:8000/petDefaultStatus
  * note: 获取默认状态
  */
-app.get('/petDefaultStatus', urlencodedParser, function(req, res) {
+app.get('/homeDefaultStatus', urlencodedParser, function(req, res) {
     var response = {
             "temp": temperature,
+            "humidity": humidity,
             'fire': fireStatus,
             'home': homeStatus
         }
@@ -162,8 +155,7 @@ app.get('/petDefaultStatus', urlencodedParser, function(req, res) {
 app.get('/controlDefaultStatus', urlencodedParser, function(req, res) {
     var response = {
         "light": lightStatus,
-        'changeAir': changeAirStatus,
-        'keepTemp': keepTempStatus
+        'changeAir': changeAirStatus
     }
     res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
     // 把json对象转换为json字符串

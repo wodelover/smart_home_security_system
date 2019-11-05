@@ -16,6 +16,18 @@
         </el-col>
         <el-col :span="6">
           <el-card class="card">
+            <!-- 湿度显示区域 -->
+            <div slot="header">室内湿度</div>
+            <div>
+              <el-image :src="humidityPath"></el-image>
+              <div class="textarea">
+                <el-tag type="success">{{currentHumidity}}%</el-tag>
+              </div>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card class="card">
             <!-- 可燃气体显示区域 -->
             <div slot="header">可燃气体</div>
             <div>
@@ -28,12 +40,12 @@
         </el-col>
         <el-col :span="6">
           <el-card class="card">
-            <!-- 宠物在窝显示区域 -->
-            <div slot="header">宠物状态</div>
+            <!-- 人体红外检测 -->
+            <div slot="header">红外检测</div>
             <div>
               <el-image :src="homePath"></el-image>
               <div class="textarea">
-                <el-tag type="success">{{homeStatusText}}</el-tag>
+                <el-tag :type="homeTextColor">{{homeStatusText}}</el-tag>
               </div>
             </div>
           </el-card>
@@ -47,6 +59,7 @@
 import homeInPath from "@/assets/homein.png";
 import homeOutPath from "@/assets/homeout.png";
 import tempPath from "@/assets/temp.png";
+import humidityPath from "@/assets/humidity.png"
 import noFirePath from "@/assets/nofire.png";
 import onFirePath from "@/assets/fire.png";
 
@@ -57,6 +70,10 @@ export default {
       tempPath: tempPath,
       currentTemp: 0,
 
+      // 定义湿度图片和数值变量
+      humidityPath: humidityPath,
+      currentHumidity: 0,
+
       // 定义可燃气体图片和文本显示
       firePath: noFirePath,
       fireText: "无可燃气体",
@@ -65,8 +82,9 @@ export default {
 
       // 定义是否在睡觉
       homePath: homeOutPath,
-      homeStatusText: "未睡觉",
-      homeStatus: false
+      homeStatusText: "无人员进入",
+      homeStatus: false,
+      homeTextColor: "success"
     };
   },
   created() {
@@ -78,7 +96,9 @@ export default {
     getUpdate() {
       setInterval(() => {
         this.$http.getPetDefaultStatus().then(resp => {
+          console.log(resp.data);
           this.currentTemp = resp.data.temp;
+          this.currentHumidity = resp.data.humidity;
           this.fireStatus = resp.data.fire;
           this.homeStatus = resp.data.home;
           this.updateHomeStatus();
@@ -100,10 +120,12 @@ export default {
     updateHomeStatus() {
       if (this.homeStatus) {
         this.homePath = homeInPath;
-        this.homeStatusText = "睡觉中";
+        this.homeStatusText = "有人员进入";
+        this.homeTextColor = "danger";
       } else {
         this.homePath = homeOutPath;
-        this.homeStatusText = "未睡觉";
+        this.homeStatusText = "无人员进入";
+        this.homeTextColor = "success";
       }
     }
   }

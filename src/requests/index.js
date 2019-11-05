@@ -14,7 +14,7 @@ export const userLogin = (username, password) => {
         url: '/login',
         method: 'post',
         responseType: 'json',
-        data: qs.stringify({'username': username, 'password': password})
+        data: qs.stringify({ 'username': username, 'password': password })
     })
 }
 
@@ -24,7 +24,7 @@ export const changeLightStatus = (lightStatus) => {
         url: '/light',
         method: 'post',
         responseType: 'json',
-        data: qs.stringify({'lightStatus': lightStatus})
+        data: qs.stringify({ 'lightStatus': lightStatus })
     })
 }
 
@@ -34,26 +34,16 @@ export const changeAirStatus = (airStatus) => {
         url: '/air',
         method: 'post',
         responseType: 'json',
-        data: qs.stringify({'airStatus': airStatus})
-    })
-}
-
-// 打开恒温接口
-export const changeKeepTempStatus = (keepTempStatus) => {
-    return ajax({
-        url: '/keepTemp',
-        method: 'post',
-        responseType: 'json',
-        data: qs.stringify({'keepTempStatus': keepTempStatus})
+        data: qs.stringify({ 'airStatus': airStatus })
     })
 }
 
 // GET获取室内照明、换气、恒温状态信息接口
-export const getControlDefaultStatus =() =>{
+export const getControlDefaultStatus = () => {
     return ajax('/controlDefaultStatus')
 }
 
-// GET获取室内温度、可燃气体、宠物状态信息接口
-export const getPetDefaultStatus =() =>{
-    return ajax('/petDefaultStatus')
+// GET获取室内温度、湿度、可燃气体、宠物状态信息接口
+export const getPetDefaultStatus = () => {
+    return ajax('/homeDefaultStatus')
 }
