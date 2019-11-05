@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <el-container>
-      <el-header>基于Arduino的宠物窝控制系统</el-header>
+      <el-header>基于Arduino的智能家居安防系统</el-header>
       <el-tabs tab-position="left">
         <el-tab-pane label="状态信息">
           <StatusPage></StatusPage>
