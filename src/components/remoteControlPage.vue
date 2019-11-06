@@ -28,39 +28,26 @@ export default {
   data() {
     return {
       lightStatus: false,
-      lightStatusText: "已关闭照明",
+      lightStatusText: "照明",
       changeOfAirStatus: false,
-      changeOfAirStatusText: "已关闭换气"
+      changeOfAirStatusText: "换气"
     };
   },
-  created(){//当刷新网页后重新请求转态信息
-    this.getUpdate();
-  },
   methods: {
-    getUpdate(){
-      setInterval(() => {
-        this.$http.getControlDefaultStatus().then(resp => {
-          this.lightStatus = resp.data.light;
-          this.changeOfAirStatus = resp.data.changeAir;
-        });
-      }, 2000);
-    },
+    // getUpdate(){
+    //   setInterval(() => {
+    //     this.$http.getControlDefaultStatus().then(resp => {
+    //       this.lightStatus = resp.data.light;
+    //       this.changeOfAirStatus = resp.data.changeAir;
+    //     });
+    //   }, 2000);
+    // },
     onLightStatusChanged() {
       this.$http.changeLightStatus(this.lightStatus).then(resp => {
-        if ('true' === resp.data.lightStatus) {
-          this.lightStatusText = "已打开照明";
-        }else{
-          this.lightStatusText = "已关闭照明";
-        }
       });
     },
     onChangeOfAirStatusChanged() {
       this.$http.changeAirStatus(this.changeOfAirStatus).then(resp => {
-        if ('true' === resp.data.airStatus) {
-          this.changeOfAirStatusText = "已打开换气";
-        } else{
-          this.changeOfAirStatusText = "已关闭换气";
-        }
       });
     }
   }
