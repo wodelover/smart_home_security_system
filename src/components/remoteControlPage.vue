@@ -28,27 +28,25 @@ export default {
   data() {
     return {
       lightStatus: false,
-      lightStatusText: "照明",
+      lightStatusText: "蜂鸣器",
       changeOfAirStatus: false,
       changeOfAirStatusText: "换气"
     };
   },
   methods: {
-    // getUpdate(){
-    //   setInterval(() => {
-    //     this.$http.getControlDefaultStatus().then(resp => {
-    //       this.lightStatus = resp.data.light;
-    //       this.changeOfAirStatus = resp.data.changeAir;
-    //     });
-    //   }, 2000);
-    // },
+    getUpdate(){
+      setInterval(() => {
+        this.$http.getControlDefaultStatus().then(resp => {
+          this.lightStatus = resp.data.light;
+          this.changeOfAirStatus = resp.data.changeAir;
+        });
+      }, 2000);
+    },
     onLightStatusChanged() {
-      this.$http.changeLightStatus(this.lightStatus).then(resp => {
-      });
+      this.$http.changeBeepStatus(this.lightStatus);
     },
     onChangeOfAirStatusChanged() {
-      this.$http.changeAirStatus(this.changeOfAirStatus).then(resp => {
-      });
+      this.$http.changeAirStatus(this.changeOfAirStatus);
     }
   }
 };

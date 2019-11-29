@@ -5,7 +5,7 @@ import qs from 'qs'
 
 const ajax = axios.create({
     // 定义默认URL
-    baseURL: "http://localhost:8080"
+    baseURL: "http://192.168.1.160:8080"
 })
 
 // 登录接口
@@ -18,13 +18,13 @@ export const userLogin = (username, password) => {
     })
 }
 
-// 打开照明接口
-export const changeLightStatus = (lightStatus) => {
+// 打开蜂鸣器接口
+export const changeBeepStatus = (beepStatus) => {
     return ajax({
-        url: '/light',
+        url: '/beep',
         method: 'post',
         responseType: 'json',
-        data: qs.stringify({ 'lightStatus': lightStatus })
+        data: qs.stringify({ 'beepStatus': beepStatus })
     })
 }
 
@@ -44,6 +44,6 @@ export const getControlDefaultStatus = () => {
 }
 
 // GET获取室内温度、湿度、可燃气体、宠物状态信息接口
-export const getPetDefaultStatus = () => {
+export const getHomeDefaultStatus = () => {
     return ajax('/homeDefaultStatus')
 }

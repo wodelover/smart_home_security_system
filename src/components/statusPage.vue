@@ -1,5 +1,6 @@
 <template>
   <div class="statusInfo">
+    <div class="over">
     <el-row :gutter="20">
       <div class="content">
         <el-col :span="6">
@@ -50,8 +51,33 @@
             </div>
           </el-card>
         </el-col>
+        <el-col :span="6">
+          <el-card class="card">
+            <!-- 蜂鸣器 -->
+            <div slot="header">蜂鸣器状态</div>
+            <div>
+              <el-image :src="beepPath"></el-image>
+              <div class="textarea">
+                <el-tag :type="beepTextColor">{{beepStatusText}}</el-tag>
+              </div>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card class="card">
+            <!-- 换气 -->
+            <div slot="header">换气状态</div>
+            <div>
+              <el-image :src="airPath"></el-image>
+              <div class="textarea">
+                <el-tag :type="airTextColor">{{airStatusText}}</el-tag>
+              </div>
+            </div>
+          </el-card>
+        </el-col>
       </div>
     </el-row>
+  </div>
   </div>
 </template>
 
@@ -62,6 +88,10 @@ import tempPath from "@/assets/temp.png";
 import humidityPath from "@/assets/humidity.png"
 import noFirePath from "@/assets/nofire.png";
 import onFirePath from "@/assets/fire.png";
+import beepOnPath from "@/assets/beepon.png"
+import beepOffPath from "@/assets/beepoff.png"
+import airOnPath from "@/assets/airon.png"
+import airOffPath from "@/assets/airoff.png"
 
 export default {
   data() {
@@ -80,11 +110,23 @@ export default {
       fireStatus: false,
       fireTextColor: "success",
 
-      // 定义是否在睡觉
+      // 定义是否有人
       homePath: homeOutPath,
       homeStatusText: "无人员进入",
       homeStatus: false,
-      homeTextColor: "success"
+      homeTextColor: "success",
+
+      // 定义蜂鸣器状态
+      beepPath: beepOffPath,
+      beepStatusText: "蜂鸣器关闭",
+      beepStatus: false,
+      beepTextColor: "success",
+
+      // 定义换气状态
+      airPath: airOffPath,
+      airStatusText: "换气关闭",
+      airStatus: false,
+      airTextColor: "success"
     };
   },
   created() {
@@ -95,14 +137,18 @@ export default {
   methods: {
     getUpdate() {
       setInterval(() => {
-        this.$http.getPetDefaultStatus().then(resp => {
+        this.$http.getHomeDefaultStatus().then(resp => {
           console.log(resp.data);
           this.currentTemp = resp.data.temp;
           this.currentHumidity = resp.data.humidity;
           this.fireStatus = resp.data.fire;
           this.homeStatus = resp.data.home;
+          this.beepStatus = resp.data.beep;
+          this.airStatus = resp.data.air;
           this.updateHomeStatus();
           this.updateFireStatus();
+          this.updateAirStatus();
+          this.updateBeepStatus();
         });
       }, 1000);
     },
@@ -127,6 +173,28 @@ export default {
         this.homeStatusText = "无人员进入";
         this.homeTextColor = "success";
       }
+    },
+    updateBeepStatus(){
+      if (this.beepStatus) {
+        this.beepPath = beepOnPath;
+        this.beepStatusText = "蜂鸣器打开";
+        this.beepTextColor = "danger";
+      } else {
+        this.beepPath = beepOffPath;
+        this.beepStatusText = "蜂鸣器关闭";
+        this.beepTextColor = "success";
+      }
+    },
+    updateAirStatus(){
+      if (this.airStatus) {
+        this.airPath = airOnPath;
+        this.airStatusText = "换气打开";
+        this.airTextColor = "danger";
+      } else {
+        this.airPath = airOffPath;
+        this.airStatusText = "换气关闭";
+        this.airTextColor = "success";
+      }
     }
   }
 };
@@ -140,6 +208,7 @@ export default {
   height: 100vh;
   text-align: center;
 }
+
 .el-col {
   justify-content: flex-start;
 }
