@@ -2,7 +2,7 @@
   <div class="main">
     <el-container>
       <el-header>基于Arduino的智能家居安防系统</el-header>
-      <el-tabs tab-position="left">
+      <el-tabs tab-position="top" >
         <el-tab-pane label="状态信息">
           <StatusPage></StatusPage>
         </el-tab-pane>
@@ -41,16 +41,23 @@ export default {
 </script>
 
 <style>
-
-.el-container, .el-tabs{
-  height: 100vh;
+.main {
+  width: 100%;
+  height: 100%;
+}
+.el-tabs{
+  height: 100%;
 }
 
-.el-header,.el-footer {
+.el-header{
   background-color: #84b7a1;
   text-align: center;
   line-height: 60px;
   font-size: 25px;
+  box-shadow: 0px 0px 4px 4px #bdc5c2;
+  margin-top: -8px;
+  margin-left: -8px;
+  margin-right: -8px;
 }
 
 body > .el-container {

@@ -205,7 +205,7 @@ export default {
   margin-top: 10px;
 } */
 .statusInfo {
-  height: 100vh;
+  /* height: 100vh; */
   text-align: center;
 }
 
