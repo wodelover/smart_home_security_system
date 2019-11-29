@@ -26,10 +26,10 @@ var temperature = "0"; // 温度
 var humidity = "0"; // 湿度
 var fireStatus = true; // 是否有可燃气体
 var homeStatus = true; // 是否有人进入
-var lightStatus = true; // 照明是否打开
+var beepStatus = true; // 蜂鸣器是否打开
 var changeAirStatus = true; // 是否在打开换气
 
-var hardLightStatus = 0; // 硬件照明是否打开
+var hardBeepStatus = 0; // 硬件蜂鸣器是否打开
 var hardChangeAirStatus = 0; // 硬件是否在打开换气
 
 /*
@@ -43,18 +43,18 @@ app.post('/roomStatus', function(req, res) {
 
     // 连接数据接收完成信号
     req.on('end', function() {
-        // 接收到硬件的完整数据(注意最外层应该使用单引号): {"temp":22.00,"humidity":45,"home":0,"fire":0,"air":0,"light":0}
+        // 接收到硬件的完整数据(注意最外层应该使用单引号): {"temp":22.00,"humidity":45,"home":0,"fire":0,"air":0,"beep":0}
         var temp = JSON.parse(data);
         // console.log(temp);
         temperature = String(temp['temp']);
         humidity = String(temp['humidity']);
         fireStatus = Boolean(temp['fire']);
         homeStatus = Boolean(temp['home']);
-        lightStatus = Boolean(temp['light']);
+        beepStatus = Boolean(temp['beep']);
         changeAirStatus = Boolean(temp['air']);
 
-        // 定义返回的数据包 {"L":1,"A":0,"K":1}
-        var res_data = '{"L":' + hardLightStatus.toString(); // 是否开灯
+        // 定义返回的数据包 {"B":1,"A":0}
+        var res_data = '{"B":' + hardBeepStatus.toString(); // 是否预警
         res_data += ',"A":' + hardChangeAirStatus.toString() + '}'; // 是否排气
         res.send(res_data);
     });
@@ -94,17 +94,17 @@ app.post('/login', urlencodedParser, function(req, res) {
 });
 
 /**
- * url: 127.0.0.1:8000/light
- * note: 打开照明接口
+ * url: 127.0.0.1:8000/beep
+ * note: 打开蜂鸣器接口
  */
-app.post('/light', urlencodedParser, function(req, res) {
-    if ('true' == req.body.lightStatus.toString()) {
-        hardLightStatus = 1;
+app.post('/beep', urlencodedParser, function(req, res) {
+    if ('true' == req.body.beepStatus.toString()) {
+        hardBeepStatus = 1;
     } else {
-        hardLightStatus = 0;
+        hardBeepStatus = 0;
     }
     var response = {
-        "lightStatus": hardLightStatus
+        "beepStatus": hardBeepStatus
     }
     res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
     res.end(JSON.stringify(response));
@@ -150,7 +150,7 @@ app.get('/homeDefaultStatus', urlencodedParser, function(req, res) {
  */
 app.get('/controlDefaultStatus', urlencodedParser, function(req, res) {
     var response = {
-        "light": lightStatus,
+        "beep": beepStatus,
         'changeAir': changeAirStatus
     }
     res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
