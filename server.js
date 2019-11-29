@@ -24,10 +24,10 @@ app.all('*', function(req, res, next) {
 /* 定义系统用到的所有的中间变量 */
 var temperature = "0"; // 温度
 var humidity = "0"; // 湿度
-var fireStatus = true; // 是否有可燃气体
-var homeStatus = true; // 是否有人进入
-var beepStatus = true; // 蜂鸣器是否打开
-var changeAirStatus = true; // 是否在打开换气
+var fireStatus = false; // 是否有可燃气体
+var homeStatus = false; // 是否有人进入
+var beepStatus = false; // 蜂鸣器是否打开
+var airStatus = false; // 是否在打开换气
 
 var hardBeepStatus = 0; // 硬件蜂鸣器是否打开
 var hardChangeAirStatus = 0; // 硬件是否在打开换气
@@ -51,7 +51,7 @@ app.post('/roomStatus', function(req, res) {
         fireStatus = Boolean(temp['fire']);
         homeStatus = Boolean(temp['home']);
         beepStatus = Boolean(temp['beep']);
-        changeAirStatus = Boolean(temp['air']);
+        airStatus = Boolean(temp['air']);
 
         // 定义返回的数据包 {"B":1,"A":0}
         var res_data = '{"B":' + hardBeepStatus.toString(); // 是否预警
@@ -76,6 +76,8 @@ app.post('/login', urlencodedParser, function(req, res) {
         "username": req.body.username,
         "password": req.body.password
     };
+
+    console.log(request);
 
     // 返回是否验证成功
     var response = {
@@ -121,7 +123,7 @@ app.post('/air', urlencodedParser, function(req, res) {
         hardChangeAirStatus = 0;
     }
     var response = {
-        "airStatus": hardChangeAirStatus
+        "airStatus": airStatus
     }
     res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
     res.end(JSON.stringify(response));
@@ -136,7 +138,9 @@ app.get('/homeDefaultStatus', urlencodedParser, function(req, res) {
             "temp": temperature,
             "humidity": humidity,
             'fire': fireStatus,
-            'home': homeStatus
+            'home': homeStatus,
+            'air': airStatus,
+            'beep': beepStatus
         }
         // console.log(response);
     res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
@@ -151,7 +155,7 @@ app.get('/homeDefaultStatus', urlencodedParser, function(req, res) {
 app.get('/controlDefaultStatus', urlencodedParser, function(req, res) {
     var response = {
         "beep": beepStatus,
-        'changeAir': changeAirStatus
+        'changeAir': airStatus
     }
     res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
     // 把json对象转换为json字符串
@@ -159,7 +163,7 @@ app.get('/controlDefaultStatus', urlencodedParser, function(req, res) {
 });
 
 // 开启服务器监听,这里不能填写IP地址,否则无法接收到硬件的数据
-var server = app.listen(8080, function() {
+var server = app.listen(8080, "0.0.0.0", function() {
     var host = server.address().address;
     var port = server.address().port;
     console.log("listen at:%s %s", host, port);
